@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Layout } from '@/components/layout/Layout';
 import { useApp } from '@/context/AppContext';
 import { ShipmentCard } from '@/components/shipments/ShipmentCard';
 import { Button } from '@/components/ui/button';
@@ -85,19 +84,18 @@ export default function DashboardCitizenTransport() {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-6">
-        {/* Dashboard Header */}
-        <Card className="mb-8 border-2">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16 border-4 border-primary">
-                  <AvatarImage src={currentUser?.avatarUrl} />
-                  <AvatarFallback className="bg-accent text-white text-xl">
-                    {currentUser?.fullName?.charAt(0) || 'V'}
-                  </AvatarFallback>
-                </Avatar>
+    <div className="container mx-auto px-4 py-6">
+      {/* Dashboard Header */}
+      <Card className="mb-8 border-2">
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16 border-4 border-primary">
+                <AvatarImage src={currentUser?.avatarUrl} />
+                <AvatarFallback className="bg-accent text-white text-xl">
+                  {currentUser?.fullName?.charAt(0) || 'V'}
+                </AvatarFallback>
+              </Avatar>
                 <div>
                   <h1 className="text-2xl md:text-3xl font-bold text-primary">
                     Bienvenue, {currentUser?.fullName || 'Voyageur'} ✈️
@@ -263,6 +261,5 @@ export default function DashboardCitizenTransport() {
           )}
         </section>
       </div>
-    </Layout>
-  );
-}
+    );
+  }

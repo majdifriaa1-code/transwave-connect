@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, FC } from 'react';
 import { UserProfile, Trip, Shipment, Conversation } from '@/types';
 import { MOCK_USERS, MOCK_TRIPS, MOCK_SHIPMENTS, MOCK_CONVERSATIONS } from '@/data/mockData';
 import { PricingBreakdown } from '@/types';
@@ -35,7 +35,7 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AppProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [trips, setTrips] = useState<Trip[]>(MOCK_TRIPS);
   const [shipments, setShipments] = useState<Shipment[]>(MOCK_SHIPMENTS);

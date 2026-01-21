@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -62,9 +61,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <Layout showHeader={false}>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 p-4 py-10">
-        <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 p-4 py-10">
+      <div className="w-full max-w-md">
           {/* Logo */}
           <Link to="/" className="block text-center mb-8">
             <h1 className="text-3xl font-bold text-primary">
@@ -216,6 +214,5 @@ export default function RegisterPage() {
           </Card>
         </div>
       </div>
-    </Layout>
-  );
-}
+    );
+  }

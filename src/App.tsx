@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppProvider } from "@/context/AppContext";
+import { Layout } from "@/components/layout/Layout";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import DashboardPro from "./pages/DashboardPro";
@@ -23,18 +24,20 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/dashboard/pro" element={<DashboardPro />} />
-            <Route path="/dashboard/citizen-transport" element={<DashboardCitizenTransport />} />
-            <Route path="/dashboard/citizen-sender" element={<DashboardCitizenSender />} />
-            <Route path="/booking/:tripId" element={<BookingPage />} />
-            <Route path="/messages" element={<MessagesPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/dashboard/pro" element={<DashboardPro />} />
+              <Route path="/dashboard/citizen-transport" element={<DashboardCitizenTransport />} />
+              <Route path="/dashboard/citizen-sender" element={<DashboardCitizenSender />} />
+              <Route path="/booking/:tripId" element={<BookingPage />} />
+              <Route path="/messages" element={<MessagesPage />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Layout>
         </BrowserRouter>
       </AppProvider>
     </TooltipProvider>

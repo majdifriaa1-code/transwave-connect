@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Layout } from '@/components/layout/Layout';
 import { useApp } from '@/context/AppContext';
 import { TripCard } from '@/components/trips/TripCard';
 import { Button } from '@/components/ui/button';
@@ -125,10 +124,9 @@ export default function DashboardCitizenSender() {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-6">
-        {/* Dashboard Header */}
-        <Card className="mb-8 border-2">
+    <div className="container mx-auto px-4 py-6">
+      {/* Dashboard Header */}
+      <Card className="mb-8 border-2">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
@@ -450,6 +448,5 @@ export default function DashboardCitizenSender() {
           )}
         </section>
       </div>
-    </Layout>
-  );
-}
+    );
+  }
