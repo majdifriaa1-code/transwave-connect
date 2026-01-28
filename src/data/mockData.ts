@@ -6,6 +6,9 @@ import {
   Conversation,
   PlatformStats,
   CountryStats,
+  Vehicle,
+  PickupLocation,
+  DepartureOffer,
 } from '@/types';
 
 // Mock Users
@@ -283,3 +286,202 @@ export const isMaghrebDestination = (destination: string): boolean => {
   const lowerDest = destination.toLowerCase();
   return MAGHREB_COUNTRIES.some(country => lowerDest.includes(country));
 };
+
+// ====== PROFESSIONAL TRANSPORTER MOCK DATA ======
+
+// Mock Vehicles
+export const MOCK_VEHICLES: Vehicle[] = [
+  {
+    id: 'vehicle_1',
+    transporterId: 'user_1',
+    licensePlate: 'CASA-123-MA',
+    brand: 'Renault',
+    model: 'Trucks T520',
+    year: 2021,
+    color: 'Blanc',
+    type: 'truck',
+    maxCapacityKg: 5000,
+    maxVolumeCbm: 25,
+    currentLoadKg: 0,
+    features: ['gps', 'tail_lift', 'tracking'],
+    status: 'active',
+    createdAt: new Date('2021-11-20'),
+    lastMaintenanceDate: new Date('2024-01-10'),
+  },
+  {
+    id: 'vehicle_2',
+    transporterId: 'user_1',
+    licensePlate: 'CASA-456-MA',
+    brand: 'Ford',
+    model: 'Transit Custom',
+    year: 2022,
+    color: 'Bleu',
+    type: 'van',
+    maxCapacityKg: 1500,
+    maxVolumeCbm: 10,
+    currentLoadKg: 0,
+    features: ['gps', 'climate_control'],
+    status: 'active',
+    createdAt: new Date('2022-03-15'),
+    lastMaintenanceDate: new Date('2024-01-05'),
+  },
+  {
+    id: 'vehicle_3',
+    transporterId: 'user_3',
+    licensePlate: 'ALGER-001-DZ',
+    brand: 'Maersk',
+    model: 'Container Ship',
+    year: 2018,
+    color: 'Gris',
+    type: 'truck',
+    maxCapacityKg: 500000,
+    maxVolumeCbm: 2000,
+    currentLoadKg: 0,
+    features: ['gps', 'refrigerated', 'pallets', 'tracking'],
+    status: 'active',
+    createdAt: new Date('2018-06-01'),
+    lastMaintenanceDate: new Date('2024-01-20'),
+  },
+];
+
+// Mock Pickup Locations
+export const MOCK_PICKUP_LOCATIONS: PickupLocation[] = [
+  {
+    id: 'pickup_1',
+    name: 'Agence Casablanca Centre',
+    address: '2 Rue Mohammed V, Casablanca 20000',
+    coordinates: {
+      latitude: 33.5731,
+      longitude: -7.5898,
+    },
+    isActive: true,
+    operatingHours: {
+      monday: { open: '08:00', close: '18:00' },
+      tuesday: { open: '08:00', close: '18:00' },
+      wednesday: { open: '08:00', close: '18:00' },
+      thursday: { open: '08:00', close: '18:00' },
+      friday: { open: '09:00', close: '17:00' },
+      saturday: { open: '10:00', close: '14:00' },
+      sunday: { open: 'closed', close: 'closed' },
+    },
+  },
+  {
+    id: 'pickup_2',
+    name: 'Entrepôt Casablanca Banlieue',
+    address: 'Z.I. Nord, Lot 45, Casablanca',
+    coordinates: {
+      latitude: 33.62,
+      longitude: -7.55,
+    },
+    isActive: true,
+    operatingHours: {
+      monday: { open: '07:00', close: '19:00' },
+      tuesday: { open: '07:00', close: '19:00' },
+      wednesday: { open: '07:00', close: '19:00' },
+      thursday: { open: '07:00', close: '19:00' },
+      friday: { open: '08:00', close: '17:00' },
+      saturday: { open: 'closed', close: 'closed' },
+      sunday: { open: 'closed', close: 'closed' },
+    },
+  },
+  {
+    id: 'pickup_3',
+    name: 'Port d\'Alger - Quai Principal',
+    address: 'Quai Principal, Port d\'Alger',
+    coordinates: {
+      latitude: 36.754,
+      longitude: 3.0588,
+    },
+    isActive: true,
+    operatingHours: {
+      monday: { open: '06:00', close: '20:00' },
+      tuesday: { open: '06:00', close: '20:00' },
+      wednesday: { open: '06:00', close: '20:00' },
+      thursday: { open: '06:00', close: '20:00' },
+      friday: { open: '08:00', close: '18:00' },
+      saturday: { open: '08:00', close: '14:00' },
+      sunday: { open: 'closed', close: 'closed' },
+    },
+  },
+];
+
+// Mock Departure Offers
+export const MOCK_DEPARTURE_OFFERS: DepartureOffer[] = [
+  {
+    id: 'departure_1',
+    transporterId: 'user_1',
+    origin: 'Lyon',
+    destination: 'Casablanca',
+    departureDate: '2025-06-20T08:00:00Z',
+    pickupDeadline: '2025-06-18T18:00:00Z',
+    totalCapacityKg: 6500,
+    availableCapacityKg: 6500,
+    totalCapacityCbm: 35,
+    availableCapacityCbm: 35,
+    basePricePerKg: 3.5,
+    pickupType: 'both',
+    pickupLocations: [
+      {
+        id: 'pickup_1',
+        name: 'Agence Casablanca Centre',
+        address: '2 Rue Mohammed V, Casablanca',
+        coordinates: { latitude: 33.5731, longitude: -7.5898 },
+        isActive: true,
+        operatingHours: {
+          monday: { open: '08:00', close: '18:00' },
+          tuesday: { open: '08:00', close: '18:00' },
+          wednesday: { open: '08:00', close: '18:00' },
+          thursday: { open: '08:00', close: '18:00' },
+          friday: { open: '09:00', close: '17:00' },
+          saturday: { open: '10:00', close: '14:00' },
+          sunday: { open: 'closed', close: 'closed' },
+        },
+      },
+    ],
+    maxPickupDistance: 50,
+    vehicleIds: ['vehicle_1', 'vehicle_2'],
+    requiredVehicles: 2,
+    matchedShipments: ['ship_1'],
+    status: 'published',
+    createdAt: new Date('2025-06-15T10:00:00Z'),
+    updatedAt: new Date('2025-06-15T10:00:00Z'),
+  },
+  {
+    id: 'departure_2',
+    transporterId: 'user_3',
+    origin: 'Marseille',
+    destination: 'Alger',
+    departureDate: '2025-06-22T14:00:00Z',
+    pickupDeadline: '2025-06-20T18:00:00Z',
+    totalCapacityKg: 500000,
+    availableCapacityKg: 500000,
+    totalCapacityCbm: 2000,
+    availableCapacityCbm: 2000,
+    basePricePerKg: 2.5,
+    pickupType: 'fixed',
+    pickupLocations: [
+      {
+        id: 'pickup_3',
+        name: 'Port d\'Alger - Quai Principal',
+        address: 'Quai Principal, Port d\'Alger',
+        coordinates: { latitude: 36.754, longitude: 3.0588 },
+        isActive: true,
+        operatingHours: {
+          monday: { open: '06:00', close: '20:00' },
+          tuesday: { open: '06:00', close: '20:00' },
+          wednesday: { open: '06:00', close: '20:00' },
+          thursday: { open: '06:00', close: '20:00' },
+          friday: { open: '08:00', close: '18:00' },
+          saturday: { open: '08:00', close: '14:00' },
+          sunday: { open: 'closed', close: 'closed' },
+        },
+      },
+    ],
+    vehicleIds: ['vehicle_3'],
+    requiredVehicles: 1,
+    matchedShipments: [],
+    status: 'published',
+    createdAt: new Date('2025-06-16T12:00:00Z'),
+    updatedAt: new Date('2025-06-16T12:00:00Z'),
+  },
+];

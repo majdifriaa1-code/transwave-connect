@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, ReactNode, FC } from 'react';
-import { UserProfile, Trip, Shipment, Conversation } from '@/types';
+import { UserProfile, Trip, Shipment, Conversation, Vehicle, DepartureOffer, PickupLocation, ProTransporterProfile, ProRegistrationData, MatchedOffer } from '@/types';
 import { MOCK_USERS, MOCK_TRIPS, MOCK_SHIPMENTS, MOCK_CONVERSATIONS } from '@/data/mockData';
 import { PricingBreakdown } from '@/types';
+import { findMatchingOffers, calculateMatchScore } from '@/utils/matchingAlgorithm';
 
 interface AppContextType {
   // User state
@@ -31,6 +32,33 @@ interface AppContextType {
   // KYC Modal
   showKycModal: boolean;
   setShowKycModal: (show: boolean) => void;
+
+  // Professional Transporter - Vehicles
+  vehicles: Vehicle[];
+  addVehicle: (vehicle: Omit<Vehicle, 'id'>) => void;
+  updateVehicle: (id: string, updates: Partial<Vehicle>) => void;
+  deleteVehicle: (id: string) => void;
+  getTransporterVehicles: (transporterId: string) => Vehicle[];
+  updateVehicleLoad: (vehicleId: string, loadKg: number) => void;
+
+  // Professional Transporter - Pickup Locations
+  pickupLocations: PickupLocation[];
+  addPickupLocation: (location: Omit<PickupLocation, 'id'>) => void;
+  updatePickupLocation: (id: string, updates: Partial<PickupLocation>) => void;
+  deletePickupLocation: (id: string) => void;
+
+  // Professional Transporter - Departure Offers
+  departureOffers: DepartureOffer[];
+  addDepartureOffer: (offer: Omit<DepartureOffer, 'id'>) => void;
+  updateDepartureOffer: (id: string, updates: Partial<DepartureOffer>) => void;
+  deleteDepartureOffer: (id: string) => void;
+  getTransporterOffers: (transporterId: string) => DepartureOffer[];
+
+  // Professional Transporter - Matching
+  matchShipmentToOffers: (shipment: Shipment) => MatchedOffer[];
+
+  // Professional Transporter - Registration
+  registerProTransporter: (data: ProRegistrationData) => Promise<ProTransporterProfile>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -41,6 +69,11 @@ export const AppProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [shipments, setShipments] = useState<Shipment[]>(MOCK_SHIPMENTS);
   const [conversations] = useState<Conversation[]>(MOCK_CONVERSATIONS);
   const [showKycModal, setShowKycModal] = useState(false);
+
+  // Professional Transporter state
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [pickupLocations, setPickupLocations] = useState<PickupLocation[]>([]);
+  const [departureOffers, setDepartureOffers] = useState<DepartureOffer[]>([]);
 
   const isAuthenticated = currentUser !== null;
 
@@ -135,6 +168,140 @@ export const AppProvider: FC<{ children: ReactNode }> = ({ children }) => {
     };
   };
 
+  // Vehicle Management
+  const addVehicle = (vehicleData: Omit<Vehicle, 'id'>) => {
+    const newVehicle: Vehicle = {
+      ...vehicleData,
+      id: `vehicle_${Date.now()}`,
+    };
+    setVehicles(prev => [newVehicle, ...prev]);
+  };
+
+  const updateVehicle = (id: string, updates: Partial<Vehicle>) => {
+    setVehicles(prev => prev.map(v => v.id === id ? { ...v, ...updates } : v));
+  };
+
+  const deleteVehicle = (id: string) => {
+    setVehicles(prev => prev.filter(v => v.id !== id));
+  };
+
+  const getTransporterVehicles = (transporterId: string): Vehicle[] => {
+    return vehicles.filter(v => v.transporterId === transporterId);
+  };
+
+  const updateVehicleLoad = (vehicleId: string, loadKg: number) => {
+    setVehicles(prev => prev.map(v => v.id === vehicleId ? { ...v, currentLoadKg: loadKg } : v));
+  };
+
+  // Pickup Location Management
+  const addPickupLocation = (locationData: Omit<PickupLocation, 'id'>) => {
+    const newLocation: PickupLocation = {
+      ...locationData,
+      id: `pickup_${Date.now()}`,
+    };
+    setPickupLocations(prev => [newLocation, ...prev]);
+  };
+
+  const updatePickupLocation = (id: string, updates: Partial<PickupLocation>) => {
+    setPickupLocations(prev => prev.map(l => l.id === id ? { ...l, ...updates } : l));
+  };
+
+  const deletePickupLocation = (id: string) => {
+    setPickupLocations(prev => prev.filter(l => l.id !== id));
+  };
+
+  // Departure Offer Management
+  const addDepartureOffer = (offerData: Omit<DepartureOffer, 'id'>) => {
+    const newOffer: DepartureOffer = {
+      ...offerData,
+      id: `departure_${Date.now()}`,
+    };
+    setDepartureOffers(prev => [newOffer, ...prev]);
+  };
+
+  const updateDepartureOffer = (id: string, updates: Partial<DepartureOffer>) => {
+    setDepartureOffers(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
+  };
+
+  const deleteDepartureOffer = (id: string) => {
+    setDepartureOffers(prev => prev.filter(o => o.id !== id));
+  };
+
+  const getTransporterOffers = (transporterId: string): DepartureOffer[] => {
+    return departureOffers.filter(o => o.transporterId === transporterId);
+  };
+
+  // Matching Algorithm
+  const matchShipmentToOffers = (shipment: Shipment): MatchedOffer[] => {
+    const matching = findMatchingOffers(shipment, departureOffers);
+    
+    return matching
+      .map(offer => {
+        const transporter = currentUser && 'vehicleIds' in currentUser 
+          ? currentUser 
+          : null;
+        
+        return {
+          offer,
+          transporterId: offer.transporterId,
+          transporterName: offer.transporterId, // In real app, fetch from users
+          transporterRating: 4.5, // Mock rating
+          estimatedPrice: shipment.weightKg * offer.basePricePerKg,
+          matchScore: calculateMatchScore(shipment, offer),
+        };
+      })
+      .sort((a, b) => b.matchScore - a.matchScore);
+  };
+
+  // Professional Transporter Registration
+  const registerProTransporter = async (data: ProRegistrationData): Promise<ProTransporterProfile> => {
+    const newUser: ProTransporterProfile = {
+      id: `pro_${Date.now()}`,
+      email: data.email,
+      fullName: data.fullName,
+      role: 'pro_transporter',
+      address: data.address,
+      isVerified: false,
+      kycStatus: 'pending',
+      trustScore: 0,
+      memberSince: new Date(),
+      badges: [],
+
+      // Professional fields
+      rib: data.rib,
+      ribVerified: false,
+      idDocument: {
+        type: data.idType,
+        number: data.idNumber,
+        issueDate: data.idIssueDate,
+        expiryDate: data.idExpiryDate,
+        photoUrl: data.idPhotoBase64,
+        verified: false,
+      },
+      kbisDocument: data.kbisNumber
+        ? {
+            number: data.kbisNumber,
+            registrationDate: data.kbisRegistrationDate || '',
+            companyName: data.companyName || '',
+            photoUrl: data.kbisPhotoBase64,
+            verified: false,
+          }
+        : undefined,
+      vehicleIds: [],
+      specializations: data.specializations || [],
+      pickupLocations: [],
+      serviceArea: data.serviceArea,
+      professionalStatus: 'registered',
+      registrationDate: new Date(),
+      insuranceProvider: data.insuranceProvider,
+      insurancePolicyNumber: data.insurancePolicyNumber,
+      insuranceExpiryDate: data.insuranceExpiryDate,
+    };
+
+    setCurrentUser(newUser);
+    return newUser;
+  };
+
   const totalUnreadMessages = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0);
 
   return (
@@ -156,6 +323,23 @@ export const AppProvider: FC<{ children: ReactNode }> = ({ children }) => {
         calculatePricing,
         showKycModal,
         setShowKycModal,
+        vehicles,
+        addVehicle,
+        updateVehicle,
+        deleteVehicle,
+        getTransporterVehicles,
+        updateVehicleLoad,
+        pickupLocations,
+        addPickupLocation,
+        updatePickupLocation,
+        deletePickupLocation,
+        departureOffers,
+        addDepartureOffer,
+        updateDepartureOffer,
+        deleteDepartureOffer,
+        getTransporterOffers,
+        matchShipmentToOffers,
+        registerProTransporter,
       }}
     >
       {children}

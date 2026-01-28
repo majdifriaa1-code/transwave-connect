@@ -14,6 +14,12 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import BookingPage from "./pages/BookingPage";
 import MessagesPage from "./pages/MessagesPage";
+import PublishDeparturePage from "./pages/ProTransporter/PublishDeparturePage";
+import AddVehiclePage from "./pages/ProTransporter/AddVehiclePage";
+import EditVehiclePage from "./pages/ProTransporter/EditVehiclePage";
+import DepartureDetailPage from "./pages/ProTransporter/DepartureDetailPage";
+import VehicleManagementPage from "./pages/ProTransporter/VehicleManagementPage";
+import PickupManagementPage from "./pages/ProTransporter/PickupManagementPage";
 
 const queryClient = new QueryClient();
 
@@ -30,11 +36,24 @@ const App = () => (
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/dashboard/pro" element={<DashboardPro />} />
+              <Route path="/dashboard-pro" element={<DashboardPro />} />
               <Route path="/dashboard/citizen-transport" element={<DashboardCitizenTransport />} />
               <Route path="/dashboard/citizen-sender" element={<DashboardCitizenSender />} />
               <Route path="/booking/:tripId" element={<BookingPage />} />
               <Route path="/messages" element={<MessagesPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              
+              {/* Professional Transporter Routes */}
+              <Route path="/pro-transporter/publish-departure" element={<PublishDeparturePage />} />
+              <Route path="/vehicles" element={<VehicleManagementPage />} />
+              <Route path="/add-vehicle" element={<AddVehiclePage />} />
+              <Route path="/edit-vehicle/:vehicleId" element={<EditVehiclePage />} />
+              <Route path="/pickup-locations" element={<PickupManagementPage />} />
+              <Route path="/pro-transporter/vehicles" element={<VehicleManagementPage />} />
+              <Route path="/pro-transporter/add-vehicle" element={<AddVehiclePage />} />
+              <Route path="/pro-transporter/edit-vehicle/:vehicleId" element={<EditVehiclePage />} />
+              <Route path="/pro-transporter/departure/:departureId" element={<DepartureDetailPage />} />
+              
+              {/* Catch-all - must be last */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
